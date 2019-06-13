@@ -70,7 +70,7 @@ public class CartActivity extends AppCompatActivity {
                     newIntent.putExtra(Utils.TOTAL_AMOUNT, String.valueOf(totalAmount));
                     newIntent.putExtra(Utils.DISCOUNT, String.valueOf(discount));
                     newIntent.putExtra(Utils.BILL_AMOUNT, String.valueOf(billAmount));
-
+                    newIntent.putParcelableArrayListExtra(Utils.HOTEL_ITEMS_ORDERED, getHotelItemsOrdered(hotelItemsOrdered));
                     startActivity(newIntent);
                 }
 
@@ -94,6 +94,16 @@ public class CartActivity extends AppCompatActivity {
                 CartActivity.this.onBackPressed();
             }
         });
+    }
+
+
+    public ArrayList<HotelItem> getHotelItemsOrdered(ArrayList<HotelItem> hotelItemsList) {
+        ArrayList<HotelItem> hotelItemsOrdered = new ArrayList<>();
+        for(HotelItem hotelItem : hotelItemsList){
+            if(hotelItem.getQuantity() > 0)
+                hotelItemsOrdered.add(hotelItem);
+        }
+        return hotelItemsOrdered;
     }
 
     @Override
