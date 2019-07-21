@@ -83,20 +83,27 @@ public class PlaceOrderActivity extends AppCompatActivity {
 
 
     public void placeOrder(){
-        final String orderId = UUID.randomUUID().toString();
-        final Order order = new Order(hotelName,hotelItemsOrdered);
+        String orderId = UUID.randomUUID().toString();
+        Order order = new Order(hotelName,hotelItemsOrdered);
 
         if(!isNetworkConnected()){
             Snackbar.make(findViewById(android.R.id.content), "Internet not available, Please Connect to Internet.", Snackbar.LENGTH_LONG).show();
             return;
         }
 
+        HotelDesk hotelDesk = new HotelDesk(order, billAmount);
+        mDatabase.child("Hotel Desk").child(orderId).setValue(hotelDesk)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Snackbar.make(findViewById(android.R.id.content), "Server Error!! Unable to place order.", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+
         mDatabase.child("Orders").child(orderId).setValue(order)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        HotelDesk hotelDesk = new HotelDesk(order, billAmount);
-                        mDatabase.child("Hotel Desk").child(orderId).setValue(hotelDesk);
                         Intent newIntent = new Intent(PlaceOrderActivity.this, OrderPlacedActivity.class);
                         PlaceOrderActivity.this.finish();
                         startActivity(newIntent);
