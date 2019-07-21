@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.journeyapps.barcodescanner.Util;
+import com.restromenu.restromenu.models.HotelItem;
 
 import java.util.ArrayList;
 
@@ -210,5 +210,15 @@ public class CartActivity extends AppCompatActivity {
         public int getItemCount() {
             return hotelItemsOrdered.size();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra(Utils.HOTEL_ITEMS_ORDERED, hotelItemsOrdered);
+        setResult(200, intent);
+        finish();
+
+        super.onBackPressed();
     }
 }

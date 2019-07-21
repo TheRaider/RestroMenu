@@ -2,7 +2,6 @@ package com.restromenu.restromenu;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,11 +14,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.restromenu.restromenu.models.HotelItem;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class HotelActivity extends AppCompatActivity {
 
@@ -29,6 +31,7 @@ public class HotelActivity extends AppCompatActivity {
     LinearLayout llGoToCart, llInvalidQrCode;
     RecyclerView rvHotelItems;
     Toolbar toolbar;
+    HotelItemsAdapter hotelItemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +64,13 @@ public class HotelActivity extends AppCompatActivity {
                 Intent intent = new Intent(HotelActivity.this,CartActivity.class);
                 intent.putExtra(Utils.HOTEL_NAME, hotelName);
                 intent.putParcelableArrayListExtra(Utils.HOTEL_ITEMS_ORDERED, getHotelItemsOrdered(hotelItems));
-                startActivity(intent);
+                startActivityForResult(intent,200);
             }
         });
 
 
         // Adapter
-        HotelItemsAdapter hotelItemsAdapter = new HotelItemsAdapter(this);
+        hotelItemsAdapter = new HotelItemsAdapter(this);
 
         // Recycler View
         rvHotelItems.setLayoutManager(new LinearLayoutManager(this));
@@ -80,6 +83,29 @@ public class HotelActivity extends AppCompatActivity {
             toolbar.setVisibility(View.GONE);
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 200){
+            ArrayList<HotelItem> hotelItemsOrdered =  data.getParcelableArrayListExtra(Utils.HOTEL_ITEMS_ORDERED);
+            HashMap<String, Integer> hotelItemsOrderedMap = new HashMap<>();
+            for(HotelItem hotelItem : hotelItemsOrdered){
+                hotelItemsOrderedMap.put(hotelItem.getProductId(), hotelItem.getQuantity());
+            }
+            for(int i=0; i<hotelItems.size(); i++){
+                HotelItem hotelItemClone = hotelItems.get(i);
+                String productId = hotelItemClone.getProductId();
+                if(hotelItemsOrderedMap.containsKey(productId)){
+                    hotelItemClone.setQuantity(hotelItemsOrderedMap.get(productId));
+                }else{
+                    hotelItemClone.setQuantity(0);
+                }
+                hotelItems.set(i, hotelItemClone);
+            }
+            if(hotelItemsAdapter != null) hotelItemsAdapter.notifyDataSetChanged();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public ArrayList<HotelItem> getHotelItemsOrdered(ArrayList<HotelItem> hotelItemsList) {

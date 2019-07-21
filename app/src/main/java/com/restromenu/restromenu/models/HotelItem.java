@@ -1,4 +1,4 @@
-package com.restromenu.restromenu;
+package com.restromenu.restromenu.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ public class HotelItem implements Parcelable{
     private int quantity;
     private int productPrice;
 
-    HotelItem() {
+    public HotelItem() {
     }
 
     public HotelItem(String productId, String name, int quantity, int productPrice) {

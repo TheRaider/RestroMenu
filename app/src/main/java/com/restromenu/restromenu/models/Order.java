@@ -1,4 +1,4 @@
-package com.restromenu.restromenu;
+package com.restromenu.restromenu.models;
 
 import java.util.ArrayList;
 

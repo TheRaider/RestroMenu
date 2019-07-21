@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.restromenu.restromenu.models.HotelDesk;
+import com.restromenu.restromenu.models.HotelItem;
+import com.restromenu.restromenu.models.Order;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -106,7 +109,6 @@ public class PlaceOrderActivity extends AppCompatActivity {
 
                     }
                 });
-
     }
 
     private boolean isNetworkConnected() {
