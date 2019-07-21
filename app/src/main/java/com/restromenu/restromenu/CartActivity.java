@@ -181,10 +181,15 @@ public class CartActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     int quantity = hotelItem.getQuantity();
                     if (quantity > 0) quantity--;
-                    HotelItem hotelItemClone = hotelItem;
-                    hotelItemClone.setQuantity(quantity);
-                    hotelItemsOrdered.set(holder.getAdapterPosition(), hotelItemClone);
-                    holder.tvProductQuantity.setText(String.valueOf(hotelItemClone.getQuantity()));
+                    if(quantity <= 0){
+                        hotelItemsOrdered.remove(holder.getAdapterPosition());
+                        notifyItemRemoved(holder.getAdapterPosition());
+                    }else {
+                        HotelItem hotelItemClone = hotelItem;
+                        hotelItemClone.setQuantity(quantity);
+                        hotelItemsOrdered.set(holder.getAdapterPosition(), hotelItemClone);
+                        holder.tvProductQuantity.setText(String.valueOf(hotelItemClone.getQuantity()));
+                    }
                 }
             });
 

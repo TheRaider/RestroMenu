@@ -29,6 +29,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
     ArrayList<HotelItem> hotelItemsOrdered = new ArrayList<>();
     String hotelName = " ";
 
+    String billAmount = " ";
 
     private DatabaseReference mDatabase;
 
@@ -62,6 +63,8 @@ public class PlaceOrderActivity extends AppCompatActivity {
         tvDiscount.setText(intent.getStringExtra(Utils.DISCOUNT));
         tvBillAmount.setText(intent.getStringExtra(Utils.BILL_AMOUNT));
 
+        billAmount = tvBillAmount.getText().toString();
+
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,8 +80,8 @@ public class PlaceOrderActivity extends AppCompatActivity {
 
 
     public void placeOrder(){
-        String orderId = UUID.randomUUID().toString();
-        Order order = new Order(hotelName,hotelItemsOrdered);
+        final String orderId = UUID.randomUUID().toString();
+        final Order order = new Order(hotelName,hotelItemsOrdered);
 
         if(!isNetworkConnected()){
             Snackbar.make(findViewById(android.R.id.content), "Internet not available, Please Connect to Internet.", Snackbar.LENGTH_LONG).show();
@@ -89,6 +92,8 @@ public class PlaceOrderActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        HotelDesk hotelDesk = new HotelDesk(order, billAmount);
+                        mDatabase.child("Hotel Desk").child(orderId).setValue(hotelDesk);
                         Intent newIntent = new Intent(PlaceOrderActivity.this, OrderPlacedActivity.class);
                         PlaceOrderActivity.this.finish();
                         startActivity(newIntent);
